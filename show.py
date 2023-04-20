@@ -1,4 +1,4 @@
-from controller import read_metric, restart_db, run_workload
+from controller import load_workload, read_metric, restart_db, run_workload
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -72,6 +72,8 @@ def base_line_test():
     for i,x in enumerate(metric_list):
         base_line_metric.append(read_metric(x, rres))
     return base_line_metric
+if st.button("初始化测试数据库"):
+    load_workload()
 if st.button("清除优化参数并重启数据库"):
     mydb = mysql.connector.connect(
     host=mysql_ip,

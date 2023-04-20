@@ -181,16 +181,20 @@ def run_workload(wl_type):
     res=os.popen(cmd).read()
     return(res)
 
-def load_workload(wl_type):
+def load_workload():
     tables_num_std = 10
     table_size_std = 1000000
     threads=20
-    script = "/usr/share/sysbench/oltp_read_write.lua"
-    if wl_type == "read_only":
-        script = "/usr/share/sysbench/oltp_read_only.lua"
-    elif wl_type == "write_only":
-        script = "/usr/share/sysbench/oltp_write_only.lua"
-    cmd="sysbench --db-driver=mysql --mysql-user="+mysql_user+" --mysql_password="+mysql_password+" --mysql-db="+mysql_test_db+" --mysql-host="+mysql_ip+" --mysql-port="+mysql_port+" --tables="+str(tables_num_std)+" --table-size="+str(table_size_std)+" --threads="+str(threads)+" "+script+" prepare"
+    mydb = mysql.connector.connect(
+    host=mysql_ip,
+    user=mysql_user,
+    password=mysql_password
+    )
+    knob_cursor = mydb.cursor()
+    knob_cursor.execute("DROP DATABASE sbtest;")
+    print("DROP DATABASE sbtest")
+
+    cmd="sysbench --db-driver=mysql --mysql-user="+mysql_user+" --mysql_password="+mysql_password+" --mysql-db="+mysql_test_db+" --mysql-host="+mysql_ip+" --mysql-port="+mysql_port+" --tables="+str(tables_num_std)+" --table-size="+str(table_size_std)+" --threads="+str(threads)+" /usr/share/sysbench/oltp_read_write.lua prepare"
     print(cmd)
     res=os.popen(cmd).read()
     return(res)
