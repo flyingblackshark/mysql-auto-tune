@@ -63,4 +63,4 @@ def clean_unsafe_pkl():
             if(lf.count("ds")!=1):
                 continue
             if(lf.endswith('.pkl')):
-                os.remove(lf+'.pkl')
+                os.remove(lf)
