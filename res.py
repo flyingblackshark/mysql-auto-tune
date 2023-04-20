@@ -64,3 +64,5 @@ def clean_unsafe_pkl():
                 continue
             if(lf.endswith('.pkl')):
                 os.remove(lf)
+            if(lf.endswith('.txt')):
+                os.remove(lf)
