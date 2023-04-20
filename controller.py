@@ -1,13 +1,12 @@
 import sys
 import os
-from settings import mysql_ip, mysql_port, mysql_test_db,mysql_user,mysql_password
 import psutil
 import time
 import numpy as np
 from ruamel import yaml
 import mysql.connector
 import streamlit as st
-from settings import mysql_ip, mysql_port, target_knob_set, target_metric_name, wl_metrics, wltype, loadtype
+from settings import mysql_ip, mysql_port, mysql_test_db,mysql_user,mysql_password
 #MEM_MAX = psutil.virtual_memory().total
 MEM_MAX = 0.8*32*1024*1024*1024                 # memory size of tikv node, not current PC
 
@@ -297,7 +296,7 @@ def calc_metric(metric_after, metric_before, metric_list):
     return(new_metric)
 
 def restart_db():
-    os.popen("echo $MY_SUDO_PASS | sudo systemctl restart mysql")
+    os.popen("sudo systemctl restart mysql")
     while(1):
         time.sleep(10)
         clrres = os.popen("sudo systemctl status mysql").read()
