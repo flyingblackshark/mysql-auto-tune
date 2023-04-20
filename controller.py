@@ -194,12 +194,12 @@ def load_workload():
     try:
         knob_cursor.execute("DROP DATABASE sbtest;")
         print("DROP DATABASE sbtest")
-    finally:
+    except:
         print("DATABASE NOT EXIST")
     try:
         knob_cursor.execute("CREATE DATABASE sbtest;")
         print("CREATE DATABASE sbtest")
-    finally:
+    except:
         print("DATABASE ALREADY EXIST")
     cmd="sysbench --db-driver=mysql --mysql-user="+mysql_user+" --mysql_password="+mysql_password+" --mysql-db="+mysql_test_db+" --mysql-host="+mysql_ip+" --mysql-port="+mysql_port+" --tables="+str(tables_num_std)+" --table-size="+str(table_size_std)+" --threads="+str(threads)+" /usr/share/sysbench/oltp_read_write.lua prepare"
     print(cmd)
