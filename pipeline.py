@@ -5,8 +5,9 @@ from settings import mysql_ip, mysql_port, target_knob_set, target_metric_name, 
 import numpy as np
 import time
 import streamlit as st
-from res import pack_pkl
+from res import clean_unsafe_pkl, pack_pkl
 def tune_pipeline():
+    clean_unsafe_pkl() # clean pkl when interrupted
     ds = RFDataSet()
     Round=200
     init_knobs()

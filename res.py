@@ -29,10 +29,6 @@ def showres(FL, OUTNAME):
             fo.write("\n")
         ff.close()
     fo.close()
-def resclean(FL):
-    for FNAME in FL:
-        if os.path.isfile(FNAME):
-            os.remove(FNAME)
 def pack_pkl():
     if os.path.isfile("res_all.csv"):
         os.remove("res_all.csv")
@@ -59,3 +55,12 @@ def pack_pkl():
 
     print(totlist)
     showres(totlist, 'res_all.csv')
+    clean_unsafe_pkl()
+def clean_unsafe_pkl():
+    for maindir, subdir, file_name_list in os.walk('.'):
+        for filename in file_name_list:
+            lf=os.path.join(maindir, filename)
+            if(lf.count("ds")!=1):
+                continue
+            if(lf.endswith('.pkl')):
+                os.remove(lf+'.pkl')
