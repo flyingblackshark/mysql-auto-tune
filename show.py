@@ -18,7 +18,7 @@ def load_data(nrows):
     return data
 if os.path.isfile("res_all.csv"):
     data = load_data(200)
-    history_data = data.loc[::-1].reset_index(drop=True)
+    history_data = data#.loc[::-1].reset_index(drop=True)
     st.subheader("历史调优数据")
     metric_chart_options = ["latency","read","write"]
     metric_chart_select = st.multiselect("选择查看的指标",metric_chart_options)
@@ -28,7 +28,7 @@ if os.path.isfile("res_all.csv"):
         columns=metric_chart_select)
     st.line_chart(chart_data)
 
-    best_knobs = pd.DataFrame(data.iloc[0,1:-1])
+    best_knobs = pd.DataFrame(data.iloc[-1,1:-1])
     st.subheader("上次找到的最优knobs及其指标数值")
     chart_data = st.dataframe(
         best_knobs,
