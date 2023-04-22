@@ -39,7 +39,7 @@ def baseline_test():
     for i,x in enumerate(metric_list):
         base_line_metric.append(read_metric(x, rres))
     return base_line_metric
-
+global output
 if __name__ == '__main__':
     st.title('MySQL Auto Tuning System')
     if os.path.isfile("res_all.csv"):
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     if st.button("开始调优"):
         st.write("启动调优")
         tune_pipeline()
-    global output
+    
     output = st.empty()
 
 
