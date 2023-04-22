@@ -40,11 +40,11 @@ def gen_random_data(target_data):
     return random_knob_result
 
 def configuration_recommendation(target_data, runrec=None):
-    from show import output
+    import show
     print("running configuration recommendation...")
     if(target_data.num_previousamples<10 and runrec==None):                               #  give random recommendation on several rounds at first
-        output.empty()
-        output.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
+        show.output.empty()
+        show.output.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
         return gen_random_data(target_data)
 
     X_workload = target_data.new_knob_set
@@ -168,8 +168,8 @@ def configuration_recommendation(target_data, runrec=None):
     best_config = X_scaler.inverse_transform(X_samples)[best_config_idx]
     print("rec:::::::", X_scaler.inverse_transform(X_samples))
     print('best_config==', best_config_idx, best_config)
-    output.empty()
-    output.write('best_config==', best_config_idx, best_config.transpose())
+    show.output.empty()
+    show.output.write('best_config==', best_config_idx, best_config.transpose())
     best_config = np.rint(best_config)
     best_config = best_config.astype(np.int16)
 
