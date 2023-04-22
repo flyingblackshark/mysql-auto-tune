@@ -5,7 +5,7 @@ from controller import knob_set, MEM_MAX
 import random
 import queue
 import streamlit as st
-from show import log_progress
+
 TOP_NUM_CONFIG = 10
 NUM_SAMPLES = 30
 GPR_EPS = 0.001
@@ -39,6 +39,7 @@ def gen_random_data(target_data):
         #     random_knob_result[name] = "None"
     return random_knob_result
 def configuration_recommendation(target_data, runrec=None):
+    from show import log_progress
     print("running configuration recommendation...")
     if(target_data.num_previousamples<10 and runrec==None):                               #  give random recommendation on several rounds at first
         log_progress("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
