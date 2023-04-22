@@ -2,6 +2,7 @@ from controller import load_workload, read_metric, restart_db, run_workload
 import streamlit as st
 import pandas as pd
 import numpy as np
+import rfmodel
 import os
 import mysql.connector
 from pipeline import tune_pipeline
@@ -89,8 +90,7 @@ if __name__ == '__main__':
     if st.button("开始调优"):
         st.write("启动调优")
         tune_pipeline()
-    global res_output
-    res_output = st.empty()
+    rfmodel.res_output = st.empty()
 
 
     
