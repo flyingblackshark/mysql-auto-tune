@@ -89,7 +89,7 @@ if __name__ == '__main__':
     if st.button("开始调优"):
         st.write("启动调优")
         tune_pipeline()
-
+    global output
     output = st.empty()
 
 
