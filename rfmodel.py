@@ -39,11 +39,11 @@ def gen_random_data(target_data):
         #     random_knob_result[name] = "None"
     return random_knob_result
 def configuration_recommendation(target_data, runrec=None):
-    from show import res_output
+   
     print("running configuration recommendation...")
     if(target_data.num_previousamples<10 and runrec==None):                               #  give random recommendation on several rounds at first
-        res_output.clear()
-        res_output.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
+        #res_output.clear()
+        st.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
         return gen_random_data(target_data)
 
     X_workload = target_data.new_knob_set
