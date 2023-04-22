@@ -40,7 +40,6 @@ def baseline_test():
         base_line_metric.append(read_metric(x, rres))
     return base_line_metric
 
-output = None
 if __name__ == '__main__':
     st.title('MySQL Auto Tuning System')
     if os.path.isfile("res_all.csv"):
