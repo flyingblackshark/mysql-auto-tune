@@ -94,9 +94,8 @@ if st.button("开始调优"):
     st.write("启动调优")
     tune_pipeline()
 
-with st.container():
-    res_output = st.empty()
 
-def log_progress(msg):
-    res_output.clear()
-    res_output.write(msg)
+res_output = st.empty()
+
+
+    
