@@ -5,6 +5,7 @@ from controller import knob_set, MEM_MAX
 import random
 import queue
 import streamlit as st
+from show import log_progress
 TOP_NUM_CONFIG = 10
 NUM_SAMPLES = 30
 GPR_EPS = 0.001
@@ -40,7 +41,7 @@ def gen_random_data(target_data):
 def configuration_recommendation(target_data, runrec=None):
     print("running configuration recommendation...")
     if(target_data.num_previousamples<10 and runrec==None):                               #  give random recommendation on several rounds at first
-        st.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
+        log_progress("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
         return gen_random_data(target_data)
 
     X_workload = target_data.new_knob_set
@@ -164,7 +165,7 @@ def configuration_recommendation(target_data, runrec=None):
     best_config = X_scaler.inverse_transform(X_samples)[best_config_idx]
     print("rec:::::::", X_scaler.inverse_transform(X_samples))
     print('best_config==', best_config_idx, best_config)
-    st.write('best_config==', best_config_idx, best_config.transpose())
+    log_progress('best_config==', best_config_idx, best_config.transpose())
     best_config = np.rint(best_config)
     best_config = best_config.astype(np.int16)
 
