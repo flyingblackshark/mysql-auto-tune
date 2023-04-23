@@ -4,7 +4,7 @@ from datamodel import RFDataSet
 from settings import mysql_ip, mysql_port, target_knob_set, target_metric_name, wl_metrics, wltype, loadtype
 import numpy as np
 import time
-import streamlit as st
+#import streamlit as st
 from res import clean_unsafe_pkl, pack_pkl
 def tune_pipeline():
     clean_unsafe_pkl() # clean pkl when interrupted
@@ -52,10 +52,10 @@ def tune_pipeline():
 
         ds.add_new_data(new_knob_set, new_metric)
 
-        import pickle
-        fp = "ds_"+KEY+"_"+str(Round)+"_.pkl"
-        with open(fp, "wb") as f:
-            pickle.dump(ds, f)
+        # import pickle
+        # fp = "ds_"+KEY+"_"+str(Round)+"_.pkl"
+        # with open(fp, "wb") as f:
+        #     pickle.dump(ds, f)
 
         ds.printdata()
 

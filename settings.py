@@ -26,4 +26,5 @@ target_knob_set=['innodb_buffer_pool_size',
                   'key_buffer_size',
                   'read_buffer_size',
                   'sort_buffer_size',
-                  'join_buffer_size']
+                  'join_buffer_size',
+                  'innodb_flush_log_at_trx_commit']

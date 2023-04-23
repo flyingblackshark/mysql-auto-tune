@@ -2,7 +2,7 @@ from settings import target_metric_name, target_knob_set
 from controller import metric_set, knob_set
 import numpy as np
 import time
-import streamlit as st
+#import streamlit as st
 
 class RFDataSet:
     #dataset for gpmodel

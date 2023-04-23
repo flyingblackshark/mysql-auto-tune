@@ -1,3 +1,3 @@
-from res import pack_pkl
+from pipeline import tune_pipeline
 
-pack_pkl()
+tune_pipeline()

@@ -5,7 +5,7 @@ import time
 import numpy as np
 from ruamel import yaml
 import mysql.connector
-import streamlit as st
+#import streamlit as st
 from settings import mysql_ip, mysql_port, mysql_test_db,mysql_user,mysql_password
 #MEM_MAX = psutil.virtual_memory().total
 MEM_MAX = 0.8*32*1024*1024*1024                 # memory size of tikv node, not current PC
@@ -85,16 +85,16 @@ knob_set=\
             "type": "int",                          # int / enum
             "default": 64                            # default value
         },
-    # "max_connections":
-    #     {
-    #         "changebyyml": True,
-    #         "set_func": None,
-    #         "minval": 0,                            # if type==int, indicate min possible value
-    #         "maxval": 0,                            # if type==int, indicate max possible value
-    #         "enumval": [32,64,128,256,512],          # if type==enum, list all valid values
-    #         "type": "enum",                         # int / enum
-    #         "default": 32                            # default value
-    #     },
+    "innodb_flush_log_at_trx_commit":
+        {
+            "changebyyml": True,
+            "set_func": None,
+            "minval": 0,                            # if type==int, indicate min possible value
+            "maxval": 0,                            # if type==int, indicate max possible value
+            "enumval": [0,1,2],          # if type==enum, list all valid values
+            "type": "enum",                         # int / enum
+            "default": 0                            # default value
+        },
     # "innodb_log_file_size":
     #     {
     #         "changebyyml": True,

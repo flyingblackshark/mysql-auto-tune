@@ -1,14 +1,16 @@
 from sklearn.ensemble import RandomForestRegressor
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler,LabelEncoder
+from sklearn.compose import ColumnTransformer
 from controller import knob_set, MEM_MAX
 import random
 import queue
-import streamlit as st
+import pandas as pd
+#import streamlit as st
 
 TOP_NUM_CONFIG = 10
 NUM_SAMPLES = 30
-GPR_EPS = 0.001
+GPR_EPS = 0.001    
 def gen_random_data(target_data):
     random_knob_result = {}
     for name in target_data.knob_labels:
@@ -38,13 +40,21 @@ def gen_random_data(target_data):
         # elif vartype == TIMESTAMP:
         #     random_knob_result[name] = "None"
     return random_knob_result
-res_output = None
+#res_output = None
+def categorical_detect(featured_knobs):
+    cat_knob_indices = []
+    for i, knob_name in enumerate(featured_knobs):
+         knob = knob_set[knob_name]
+         if knob['type'] == "enum":
+             cat_knob_indices.append(i)
+    return cat_knob_indices
+             
 def configuration_recommendation(target_data, runrec=None):
 
     print("running configuration recommendation...")
     if(target_data.num_previousamples<10 and runrec==None):                               #  give random recommendation on several rounds at first
-        res_output.empty()
-        res_output.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
+        #res_output.empty()
+        #res_output.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
         return gen_random_data(target_data)
 
     X_workload = target_data.new_knob_set
@@ -68,8 +78,18 @@ def configuration_recommendation(target_data, runrec=None):
     y_columnlabels = y_columnlabels[target_obj_idx]
 
     X_matrix = np.vstack([X_target, X_workload])
-
-
+    categorical_info = categorical_detect(X_columnlabels) 
+    # deal with numerical and categorical knobs
+    # label_encoder = ColumnTransformer(
+    # [('label_encoder', LabelEncoder(), categorical_info)],
+    # remainder='passthrough'                     
+    # )
+   
+    #X_matrix = label_encoder.fit_transform(X_matrix)
+    le = LabelEncoder()
+    df = pd.DataFrame(X_matrix)
+    df[categorical_info]=df[categorical_info].apply(le.fit_transform)
+    X_matrix = df.to_numpy()
     # Scale to N(0, 1)
     X_scaler = StandardScaler()
     X_scaler.fit(X_matrix)
@@ -158,18 +178,19 @@ def configuration_recommendation(target_data, runrec=None):
     #X_samples=np.rint(X_samples)
     #X_samples=X_scaler.transform(X_samples)
 
-    model = RandomForestRegressor(n_estimators = 300, max_features = 'sqrt', max_depth = 7, random_state = 18)
+    model = RandomForestRegressor(n_estimators = 300 , random_state = 18)
     model.fit(X_scaled, y_scaled) 
 
     print("predict:::::::: ", X_samples.shape, X_scaler.inverse_transform(X_samples).astype(np.int16), type(X_samples[0][0]))
     res = model.predict(X_samples)
 
     best_config_idx = np.argmin(res)
+    #best_config = onehotencorder.inverse_transform(best_config)
     best_config = X_scaler.inverse_transform(X_samples)[best_config_idx]
     print("rec:::::::", X_scaler.inverse_transform(X_samples))
     print('best_config==', best_config_idx, best_config)
-    res_output.empty()
-    res_output.write('best_config==', best_config_idx, best_config.transpose())
+    #res_output.empty()
+    #res_output.write('best_config==', best_config_idx, best_config.transpose())
     best_config = np.rint(best_config)
     best_config = best_config.astype(np.int16)
 
