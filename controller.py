@@ -241,9 +241,9 @@ def set_mysql_knob(knob_sessname, knob_val):
         else:
             knob_val="ON"
     if(knob_name=='key_buffer_size' or knob_name=='read_buffer_size' or knob_name=='sort_buffer_size' or knob_name=='join_buffer_size'):
-        knob_val=knob_val*1024
+        knob_val=knob_val*1024 #byte to KB
     if(knob_name=='innodb_buffer_pool_size' or knob_name=='innodb_log_file_size'):
-        knob_val=knob_val*1024*1024
+        knob_val=knob_val*1024*1024 # byte to MB
     knob_cursor = mydb.cursor()
     knob_cursor.execute("SET PERSIST_ONLY "+knob_sessname+" = "+str(knob_val)+";")
     print("set_mysql:: ",knob_sessname, knob_sess, knob_name, knob_val)
