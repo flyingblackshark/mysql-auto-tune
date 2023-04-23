@@ -52,10 +52,10 @@ def tune_pipeline():
 
         ds.add_new_data(new_knob_set, new_metric)
 
-        # import pickle
-        # fp = "ds_"+KEY+"_"+str(Round)+"_.pkl"
-        # with open(fp, "wb") as f:
-        #     pickle.dump(ds, f)
+        import pickle
+        fp = "ds_"+KEY+"_"+str(Round)+"_.pkl"
+        with open(fp, "wb") as f:
+            pickle.dump(ds, f)
 
         ds.printdata()
 
