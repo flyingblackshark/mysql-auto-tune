@@ -95,16 +95,26 @@ knob_set=\
             "type": "enum",                         # int / enum
             "default": 0                            # default value
         },
-    # "innodb_log_file_size":
-    #     {
-    #         "changebyyml": True,
-    #         "set_func": None,
-    #         "minval": 0,                            # if type==int, indicate min possible value
-    #         "maxval": 0,                            # if type==int, indicate max possible value
-    #         "enumval": [128,256,512,1024],                # if type==enum, list all valid values
-    #         "type": "enum",                         # int / enum
-    #         "default": 128                            # default value
-    #     },
+    "innodb_log_files_in_group":
+        {
+            "changebyyml": True,
+            "set_func": None,
+            "minval": 0,                            # if type==int, indicate min possible value
+            "maxval": 0,                            # if type==int, indicate max possible value
+            "enumval": [1,2,4,8],                # if type==enum, list all valid values
+            "type": "enum",                         # int / enum
+            "default": 2                            # default value
+        },
+        "innodb_log_compressed_pages":
+        {
+            "changebyyml": True,
+            "set_func": None,
+            "minval": 0,                            # if type==int, indicate min possible value
+            "maxval": 0,                            # if type==int, indicate max possible value
+            "enumval": ["ON","OFF"],                # if type==enum, list all valid values
+            "type": "enum",                         # int / enum
+            "default": "ON"                            # default value
+        },
     }
 
 
