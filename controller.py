@@ -111,9 +111,9 @@ knob_set=\
             "set_func": None,
             "minval": 0,                            # if type==int, indicate min possible value
             "maxval": 0,                            # if type==int, indicate max possible value
-            "enumval": ["ON","OFF"],                # if type==enum, list all valid values
+            "enumval": [0,1],                # if type==enum, list all valid values
             "type": "enum",                         # int / enum
-            "default": "ON"                            # default value
+            "default": 1                            # default value
         },
     }
 
@@ -230,11 +230,16 @@ def set_mysql_knob(knob_sessname, knob_val):
     if(knob_set[knob_sessname]['type']=='enum'):
         idx=knob_val
         knob_val=knob_set[knob_sessname]['enumval'][idx]
-    if(knob_set[knob_sessname]['type']=='bool'):
+    # if(knob_set[knob_sessname]['type']=='bool'):
+    #     if(knob_val==0):
+    #         knob_val=False
+    #     else:
+    #         knob_val=True
+    if(knob_name=='innodb_log_compressed_pages'):
         if(knob_val==0):
-            knob_val=False
+            knob_val="OFF"
         else:
-            knob_val=True
+            knob_val="ON"
     if(knob_name=='key_buffer_size' or knob_name=='read_buffer_size' or knob_name=='sort_buffer_size' or knob_name=='join_buffer_size'):
         knob_val=knob_val*1024
     if(knob_name=='innodb_buffer_pool_size' or knob_name=='innodb_log_file_size'):
