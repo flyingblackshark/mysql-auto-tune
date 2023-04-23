@@ -6,7 +6,7 @@ from controller import knob_set, MEM_MAX
 import random
 import queue
 import pandas as pd
-#import streamlit as st
+import streamlit as st
 
 TOP_NUM_CONFIG = 10
 NUM_SAMPLES = 30
@@ -40,7 +40,7 @@ def gen_random_data(target_data):
         # elif vartype == TIMESTAMP:
         #     random_knob_result[name] = "None"
     return random_knob_result
-res_output = None
+
 def categorical_detect(featured_knobs):
     cat_knob_indices = []
     for i, knob_name in enumerate(featured_knobs):
@@ -53,8 +53,8 @@ def configuration_recommendation(target_data, runrec=None):
 
     print("running configuration recommendation...")
     if(target_data.num_previousamples<10 and runrec==None):                               #  give random recommendation on several rounds at first
-        res_output.empty()
-        res_output.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
+        st.empty()
+        st.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
         return gen_random_data(target_data)
 
     X_workload = target_data.new_knob_set
@@ -189,8 +189,8 @@ def configuration_recommendation(target_data, runrec=None):
     best_config = X_scaler.inverse_transform(X_samples)[best_config_idx]
     print("rec:::::::", X_scaler.inverse_transform(X_samples))
     print('best_config==', best_config_idx, best_config)
-    res_output.empty()
-    res_output.write('best_config==', best_config_idx, best_config.transpose())
+    st.empty()
+    st.write('best_config==', best_config_idx, best_config)
     best_config = np.rint(best_config)
     best_config = best_config.astype(np.int16)
 
