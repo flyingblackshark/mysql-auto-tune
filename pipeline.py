@@ -1,12 +1,12 @@
 from controller import read_metric, read_knob,  set_knob, knob_set, init_knobs, run_workload, calc_metric, restart_db
 from rfmodel import configuration_recommendation
 from datamodel import RFDataSet
-from settings import mysql_ip, mysql_port, target_knob_set, target_metric_name, wl_metrics, wltype, loadtype
+from settings import mysql_ip, mysql_port, target_knob_set, target_metric_name, wl_metrics, loadtype
 import numpy as np
 import time
 #import streamlit as st
 from res import clean_unsafe_pkl, pack_pkl
-def tune_pipeline():
+def tune_pipeline(wltype):
     clean_unsafe_pkl() # clean pkl when interrupted
     ds = RFDataSet()
     Round=200
