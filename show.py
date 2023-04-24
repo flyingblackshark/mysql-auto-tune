@@ -64,20 +64,21 @@ if __name__ == '__main__':
                 )
         else:
             st.subheader("暂无历史数据")
+    load_options = ["Read_Write", "Read_Only", "Write_Only"]
     with tune_tab:
         st.subheader("选择调优指标")
         metric_options = ["Average_Latency", "Read", "Write"]
         tune_selected_metric = st.selectbox("选择指标", metric_options)
         st.subheader("选择负载类型")
-        tune_load_options = ["Read_Write", "Read_Only", "Write_Only"]
-        tune_selected_load = st.selectbox("选择负载", tune_load_options)
+        
+        tune_selected_load = st.selectbox("选择调优负载", load_options)
         if st.button("开始调优"):
             st.write("启动调优")
             tune_pipeline(detect_load_settings(tune_selected_load))
         rfmodel.res_output = st.empty()
     with test_tab:
-        test_load_options = ["Read_Write", "Read_Only", "Write_Only"]
-        test_selected_load = st.selectbox("选择负载", test_load_options)
+
+        test_selected_load = st.selectbox("选择基准测试负载", load_options)
         if st.button("进行基准性能测试"):
             base_line = baseline_test(test_selected_load)
             st.dataframe(base_line,)
