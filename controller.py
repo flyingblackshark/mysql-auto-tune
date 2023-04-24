@@ -6,7 +6,7 @@ import numpy as np
 from ruamel import yaml
 import mysql.connector
 #import streamlit as st
-from settings import mysql_ip, mysql_port, mysql_test_db,mysql_user,mysql_password
+from settings import mysql_ip, mysql_port, mysql_test_db,mysql_user,mysql_password,threads,tables_num_std,table_size_std
 #MEM_MAX = psutil.virtual_memory().total
 MEM_MAX = 0.8*32*1024*1024*1024                 # memory size of tikv node, not current PC
 
@@ -178,9 +178,7 @@ metric_set=\
 #------------------workload controller------------------
 
 def run_workload(wl_type):
-    tables_num_std = 10
-    table_size_std = 1000000
-    threads=20
+
     script = "/usr/share/sysbench/oltp_read_write.lua"
     if wl_type == "read_only":
         script = "/usr/share/sysbench/oltp_read_only.lua"
@@ -194,7 +192,6 @@ def run_workload(wl_type):
 def load_workload():
     tables_num_std = 10
     table_size_std = 1000000
-    threads=20
     mydb = mysql.connector.connect(
     host=mysql_ip,
     user=mysql_user,
