@@ -28,9 +28,9 @@ def detect_load_settings(selected_load):
     elif selected_load == "Write_Only":
         wltype="write_only"
     return wltype
-def baseline_test():
+def baseline_test(selected_load):
     base_line_metric=[]
-    wltype = detect_load_settings()
+    wltype = detect_load_settings(selected_load)
     rres = run_workload(wltype)
     print(rres)
     if("_ERROR" in rres):
@@ -76,8 +76,10 @@ if __name__ == '__main__':
             tune_pipeline()
         rfmodel.res_output = st.empty()
     with test_tab:
+        load_options = ["Read_Write", "Read_Only", "Write_Only"]
+        selected_load = st.selectbox("选择负载", load_options)
         if st.button("进行基准性能测试"):
-            base_line = baseline_test()
+            base_line = baseline_test(selected_load)
             st.dataframe(base_line,)
     with settings_tab:
         if st.button("初始化测试数据库"):
