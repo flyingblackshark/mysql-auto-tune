@@ -47,13 +47,21 @@ if __name__ == '__main__':
     with history_tab:
         if os.path.isfile("res_all.csv"):
             data = load_data(200)
-            history_data = data#.loc[::-1].reset_index(drop=True)
+            history_data = data[['latency','read','write']]#.loc[::-1].reset_index(drop=True)
             st.subheader("历史调优数据")
             metric_chart_options = ["latency","read","write"]
+          
+            if os.path.isfile("baseline.csv"):
+                
+                baseline_data = pd.read_csv("baseline.csv")
+                data['baseline_latency']=[baseline_data.iloc[0,1] for i in range(199)]
+                data['baseline_read']=[baseline_data.iloc[1,1] for i in range(199)]
+                data['baseline_write']=[baseline_data.iloc[2,1] for i in range(199)]
+                history_data = data[['latency','read','write','baseline_latency','baseline_read','baseline_write']]
+                metric_chart_options = ['latency','read','write','baseline_latency','baseline_read','baseline_write']
             metric_chart_select = st.multiselect("选择查看的指标",metric_chart_options)
-
             chart_data = pd.DataFrame(
-                history_data[['latency','read','write']],
+                history_data,
                 columns=metric_chart_select)
             st.line_chart(chart_data)
 
@@ -82,6 +90,8 @@ if __name__ == '__main__':
         if st.button("进行基准性能测试"):
             base_line = baseline_test(test_selected_load)
             st.dataframe(base_line,)
+            base_line = pd.DataFrame(base_line)
+            base_line.to_csv("baseline.csv")
     with settings_tab:
         if st.button("初始化测试数据库"):
             load_workload()

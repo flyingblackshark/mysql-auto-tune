@@ -48,13 +48,17 @@ def categorical_detect(featured_knobs):
          if knob['type'] == "enum":
              cat_knob_indices.append(i)
     return cat_knob_indices
-             
+def build_dataset(target_data, runrec=None):
+    print("running dataset building...")
+    #st.empty()
+    #st.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
+    return gen_random_data(target_data)
 def configuration_recommendation(target_data, runrec=None):
 
     print("running configuration recommendation...")
     if(target_data.num_previousamples<10 and runrec==None):                               #  give random recommendation on several rounds at first
-        st.empty()
-        st.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
+        # st.empty()
+        # st.write("正在进行第"+str(target_data.num_previousamples+1)+"轮随机knobs训练")
         return gen_random_data(target_data)
 
     X_workload = target_data.new_knob_set
@@ -178,7 +182,11 @@ def configuration_recommendation(target_data, runrec=None):
     #X_samples=np.rint(X_samples)
     #X_samples=X_scaler.transform(X_samples)
 
-    model = RandomForestRegressor(n_estimators = 300 , random_state = 18)
+    #model = RandomForestRegressor(n_estimators = 300 , random_state = 18)
+    import pickle
+    ff=open("bestmodel.pkl",'rb')
+    model=pickle.load(ff)
+    #if target_data.num_previousamples > 1:
     model.fit(X_scaled, y_scaled) 
 
     print("predict:::::::: ", X_samples.shape, X_scaler.inverse_transform(X_samples).astype(np.int16), type(X_samples[0][0]))

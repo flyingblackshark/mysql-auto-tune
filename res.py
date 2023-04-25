@@ -56,6 +56,34 @@ def pack_pkl():
     print(totlist)
     showres(totlist, 'res_all.csv')
     clean_unsafe_pkl()
+def pack_train_pkl():
+    if os.path.isfile("train_set.csv"):
+        os.remove("train_set.csv")
+    KEYdict={}
+    for maindir, subdir, file_name_list in os.walk('.'):
+        for filename in file_name_list:
+            lf=os.path.join(maindir, filename)
+            if(lf.count("train")!=1):
+                continue
+            if(lf.endswith('.pkl')):
+                _lf=lf.split("_")
+                KEY=_lf[1]
+                Round=int(_lf[2])
+                CurrentRound=KEYdict.get(KEY, -1)
+                if(CurrentRound==-1 or Round<CurrentRound):
+                    KEYdict[KEY] = Round
+                    
+
+    totlist=[]
+    for _k in KEYdict:
+        fl='ds_'+_k+"_"+str(KEYdict[_k])+'_'
+        showres([fl+'.pkl'], 'res_'+fl+'.txt')
+        totlist.append(fl+'.pkl')
+
+    print(totlist)
+    showres(totlist, 'train_set.csv')
+    clean_unsafe_pkl()
+
 def clean_unsafe_pkl():
     for maindir, subdir, file_name_list in os.walk('.'):
         for filename in file_name_list:
