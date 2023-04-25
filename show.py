@@ -5,7 +5,7 @@ import numpy as np
 import rfmodel
 import os
 import mysql.connector
-from pipeline import tune_pipeline
+from pipeline import train_pipeline, tune_pipeline
 from settings import mysql_ip, mysql_port, mysql_test_db,mysql_user,mysql_password,wl_metrics
 @st.cache_data
 def load_data(nrows):
@@ -80,6 +80,9 @@ if __name__ == '__main__':
         st.subheader("选择负载类型")
         
         tune_selected_load = st.selectbox("选择调优负载", load_options)
+        if st.button("开始训练模型"):
+            st.write("启动训练")
+            train_pipeline(detect_load_settings(tune_selected_load))
         if st.button("开始调优"):
             st.write("启动调优")
             tune_pipeline(detect_load_settings(tune_selected_load))
