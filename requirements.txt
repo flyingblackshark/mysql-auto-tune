@@ -6,3 +6,4 @@ psutil
 ruamel.yaml
 mysql.connector.python
 streamlit
+scikit-optimize
