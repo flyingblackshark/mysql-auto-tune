@@ -1,8 +1,10 @@
+from sklearn.metrics import accuracy_score, explained_variance_score
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import RandomizedSearchCV, train_test_split
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, train_test_split
 from controller import read_metric, read_knob,  set_knob, knob_set, init_knobs, run_workload, calc_metric, restart_db
+from skopt import BayesSearchCV
 from rfmodel import configuration_recommendation,build_dataset
 from datamodel import RFDataSet
 from settings import mysql_ip, mysql_port, target_knob_set, target_metric_name, wl_metrics, loadtype
@@ -11,7 +13,7 @@ import time
 import pandas as pd
 #import streamlit as st
 from res import clean_unsafe_pkl, pack_pkl
-def train_pipeline(wltype):
+def train_pipeline(wltype,searchtype):
     ds = RFDataSet()
     Round=200
     init_knobs()
@@ -88,19 +90,20 @@ def train_pipeline(wltype):
 
     def evaluate(model, test_features, test_labels):
         predictions = model.predict(test_features)
-        errors = 100 * mean_squared_error(predictions,test_labels)
-        accuracy = 100 - errors 
+        # errors = 100 * mean_squared_error(predictions,test_labels)
+        # accuracy = 100 - errors 
+        accuracy = explained_variance_score(test_labels,predictions)
         print('Model Performance')
-        print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
-        print('Accuracy = {:0.2f}%.'.format(accuracy))
-        
+        #print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
+        print('evs = {:0.2f}%.'.format(accuracy))
+       
         return accuracy
 
     rf = RandomForestRegressor()
     # Number of trees in random forest
     n_estimators = [int(x) for x in np.linspace(start = 200, stop = 2000, num = 10)]
     # Number of features to consider at every split
-    max_features = ['auto', 'sqrt']
+    max_features = ['sqrt', 'log2',None]
     # Maximum number of levels in tree
     max_depth = [int(x) for x in np.linspace(10, 110, num = 11)]
     max_depth.append(None)
@@ -111,21 +114,25 @@ def train_pipeline(wltype):
     # Method of selecting samples for training each tree
     bootstrap = [True, False]
     # Create the random grid
-    random_grid = {'n_estimators': n_estimators,
+    param_grid = {'n_estimators': n_estimators,
                 'max_features': max_features,
                 'max_depth': max_depth,
                 'min_samples_split': min_samples_split,
                 'min_samples_leaf': min_samples_leaf,
                 'bootstrap': bootstrap}
-
-    rf_random = RandomizedSearchCV(estimator = rf, param_distributions = random_grid, n_iter = 100, cv = 3, verbose=2, random_state=42, n_jobs = -1)
+    if searchtype == 'random':
+        cv = RandomizedSearchCV(estimator = rf, param_distributions = param_grid, n_iter = 100, cv = 3, verbose=2, random_state=42, n_jobs = -1)
+    elif searchtype == 'grid':
+        cv = GridSearchCV(estimator = rf, param_grid = param_grid, cv = 3, n_jobs = -1, verbose = 2)
+    elif searchtype == 'bayes':
+        cv = BayesSearchCV(estimator = rf, search_spaces= param_grid, cv = 3, n_jobs = -1, verbose = 2)
     # Fit the random search model
     base_model = RandomForestRegressor(n_estimators = 10, random_state = 42)
     base_model.fit(X_train, y_train)
-    rf_random.fit(X_train, y_train)
+    cv.fit(X_train, y_train)
     base_accuracy = evaluate(base_model, X_test, y_test)
 
-    best_random = rf_random.best_estimator_
+    best_random = cv.best_estimator_
     random_accuracy = evaluate(best_random, X_test, y_test)
 
     print('Improvement of {:0.2f}%.'.format( 100 * (random_accuracy - base_accuracy) / base_accuracy))

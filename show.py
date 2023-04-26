@@ -14,6 +14,13 @@ def load_data(nrows):
     data.rename(lowercase, axis='columns', inplace=True)
     #data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
     return data
+def detect_search_settings(selected_search):
+    target_search_name="random"
+    if selected_search == "GridSearch":
+        target_search_name="grid"
+    elif selected_search == "BayesSearch":
+        target_search_name="bayes"
+    return target_search_name
 def detect_metric_settings(selected_metric):
     target_metric_name="latency"
     if selected_metric == "Read":
@@ -43,7 +50,7 @@ def baseline_test(selected_load):
 
 if __name__ == '__main__':
     st.title('MySQL Auto Tuning System')
-    history_tab, tune_tab, test_tab,settings_tab = st.tabs(["历史数据模块", "调优模块", "测试模块","设置模块"])
+    history_tab, train_tab,tune_tab, test_tab,settings_tab = st.tabs(["历史数据模块","训练模块", "调优模块", "测试模块","设置模块"])
     with history_tab:
         if os.path.isfile("res_all.csv"):
             data = load_data(200)
@@ -52,7 +59,6 @@ if __name__ == '__main__':
             metric_chart_options = ["latency","read","write"]
           
             if os.path.isfile("baseline.csv"):
-                
                 baseline_data = pd.read_csv("baseline.csv")
                 data['baseline_latency']=[baseline_data.iloc[0,1] for i in range(199)]
                 data['baseline_read']=[baseline_data.iloc[1,1] for i in range(199)]
@@ -73,22 +79,27 @@ if __name__ == '__main__':
         else:
             st.subheader("暂无历史数据")
     load_options = ["Read_Write", "Read_Only", "Write_Only"]
+    with train_tab:
+        if st.button("开始训练模型"):
+            st.subheader("选择训练方法")
+            search_options = ["RandomSearch","GridSearch","BayesSearch"]
+            train_selected_search = st.selectbox("选择训练方法", search_options)
+            st.subheader("选择负载类型")
+            train_selected_load = st.selectbox("选择训练负载", load_options)
+            st.write("启动训练")
+            train_pipeline(detect_load_settings(train_selected_load),detect_search_settings(train_selected_search))
     with tune_tab:
         st.subheader("选择调优指标")
         metric_options = ["Average_Latency", "Read", "Write"]
         tune_selected_metric = st.selectbox("选择指标", metric_options)
         st.subheader("选择负载类型")
-        
         tune_selected_load = st.selectbox("选择调优负载", load_options)
-        if st.button("开始训练模型"):
-            st.write("启动训练")
-            train_pipeline(detect_load_settings(tune_selected_load))
+       
         if st.button("开始调优"):
             st.write("启动调优")
             tune_pipeline(detect_load_settings(tune_selected_load))
         rfmodel.res_output = st.empty()
     with test_tab:
-
         test_selected_load = st.selectbox("选择基准测试负载", load_options)
         if st.button("进行基准性能测试"):
             base_line = baseline_test(test_selected_load)
